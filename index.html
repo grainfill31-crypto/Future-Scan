@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>未来扫描 · 真实AI版 | Future Scanning with DeepSeek</title>
+    <style>
+        /* ========== 完整样式 (与之前版本一致，保证所有元素显示正常) ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #0b1c2f 0%, #1a3f5c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .game-container {
+            width: 1450px;
+            max-width: 100%;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(16px);
+            border-radius: 70px;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            padding: 30px;
+        }
+        .lang-home {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 550px;
+        }
+        .lang-home h1 {
+            font-size: 3.2rem;
+            color: #fee3b8;
+            text-shadow: 0 5px 0 #b45f2b;
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 1.3;
+        }
+        .lang-buttons {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        .lang-btn {
+            background: #ffeacc;
+            border: 5px solid #fea63d;
+            border-radius: 100px;
+            padding: 15px 45px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #2f4d73;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 8px 0 #a4521a;
+        }
+        .lang-btn.selected {
+            background: #fec97a;
+            border-color: #c57f1e;
+            transform: scale(1.05);
+        }
+        .lang-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #a4521a;
+        }
+        .start-btn {
+            background: #56ab91;
+            border: none;
+            border-radius: 80px;
+            padding: 18px 80px;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #2e6b58;
+            margin: 20px 0;
+            border: 3px solid #ffd966;
+        }
+        .start-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #2e6b58;
+        }
+        .footer-credit {
+            margin-top: 30px;
+            color: #bbd1df;
+            font-size: 1rem;
+        }
+        .lang-return {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+        .return-lang-btn {
+            background: #dff0fa;
+            border: 2px solid #2f6f9f;
+            border-radius: 50px;
+            padding: 8px 25px;
+            font-weight: 600;
+            color: #1d4e72;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+        .step-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #bed9f0;
+            color: #1d4465;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.8rem;
+            border: 5px solid white;
+        }
+        .step-circle.active {
+            background: #f6b83e;
+            color: #1d2f44;
+            border-color: #ffecb3;
+        }
+        .step-panel {
+            background: white;
+            border-radius: 60px;
+            padding: 35px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+            margin-bottom: 25px;
+        }
+        h2 {
+            font-size: 2rem;
+            color: #134b6b;
+            margin-bottom: 25px;
+            border-left: 15px solid #f6b83e;
+            padding-left: 25px;
+        }
+        .step-guide {
+            background: #fef6e6;
+            border-radius: 40px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            color: #2f5575;
+            border: 2px dashed #f6b83e;
+        }
+        .profession-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .prof-option {
+            background: #e4f0fa;
+            border-radius: 60px;
+            padding: 12px 28px;
+            font-weight: 600;
+            color: #134b6b;
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+        .prof-option.selected {
+            background: #134b6b;
+            color: white;
+            border-color: #f6b83e;
+        }
+        .custom-prof {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .custom-prof input {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 25px;
+            border-radius: 60px;
+            border: 3px solid #c3dff5;
+            font-size: 1.1rem;
+        }
+        .values-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 25px 0;
+        }
+        .value-chip {
+            background: #f2f7fd;
+            border: 2px solid #b3d6f0;
+            border-radius: 60px;
+            padding: 12px 25px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.1s;
+            color: #1a405b;
+        }
+        .value-chip.selected {
+            background: #1d6f9c;
+            color: white;
+            border-color: #ffb75e;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .nav-btn {
+            background: #dbeefe;
+            border: none;
+            border-radius: 60px;
+            padding: 14px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #134b6b;
+            cursor: pointer;
+            border: 3px solid white;
+        }
+        .nav-btn.primary {
+            background: #f6b83e;
+            color: #2f3e55;
+        }
+        .nav-btn:disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .domain-board {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 20px;
+        }
+        .domain-col {
+            background: #eaf3fc;
+            border-radius: 40px;
+            padding: 20px;
+            border: 3px solid white;
+        }
+        .domain-title {
+            font-weight: 800;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .draw-btn {
+            background: #fdd998;
+            border: none;
+            border-radius: 50px;
+            padding: 6px 18px;
+            font-weight: 700;
+            color: #754e1f;
+            cursor: pointer;
+            border: 2px solid #f3b453;
+        }
+        .draw-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .card-item {
+            background: white;
+            border-radius: 30px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border-left: 12px solid;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-name {
+            font-weight: 800;
+            font-size: 1.2rem;
+        }
+        .card-stage {
+            background: #e2ecf5;
+            padding: 4px 15px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+        .card-desc {
+            margin: 10px 0;
+            color: #2f5575;
+            font-size: 0.95rem;
+        }
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .ai-chat-btn, .delete-card-btn {
+            background: #d8eaff;
+            border: none;
+            border-radius: 40px;
+            padding: 6px 18px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .delete-card-btn {
+            background: #ffd9d9;
+            color: #a52a2a;
+        }
+        .thought-textarea {
+            width: 100%;
+            margin-top: 12px;
+            padding: 12px 15px;
+            border-radius: 30px;
+            border: 2px solid #b3d6f0;
+            font-size: 0.9rem;
+            resize: vertical;
+            background: #f9fdff;
+        }
+        .chat-modal {
+            background: #f1f9ff;
+            border-radius: 30px;
+            padding: 15px;
+            margin-top: 15px;
+            display: none;
+        }
+        .chat-modal.show {
+            display: block;
+        }
+        .chat-messages {
+            background: white;
+            border-radius: 25px;
+            padding: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 2px solid #9bc7e7;
+        }
+        .send-chat {
+            background: #1d6f9c;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0 25px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .connection-zone {
+            background: #e6f0fa;
+            border-radius: 50px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .selected-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .card-selector {
+            background: #ffe0a8;
+            border-radius: 50px;
+            padding: 10px 22px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            font-weight: 600;
+        }
+        .card-selector.selected {
+            border-color: #c57f1e;
+            background: #ffc97a;
+        }
+        .synergy-list {
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .synergy-item {
+            background: white;
+            border-radius: 60px;
+            padding: 12px 25px;
+            margin-bottom: 8px;
+            border-left: 10px solid #f6b83e;
+        }
+        .shock-area {
+            background: #fee8e8;
+            border-radius: 50px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 4px solid #d25f5f;
+            box-shadow: 0 8px 0 #b24242;
+        }
+        .shock-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #a52a2a;
+            margin-bottom: 10px;
+        }
+        .extra-draw-section {
+            margin: 25px 0;
+        }
+        .headline-area {
+            background: #d4e7f7;
+            border-radius: 60px;
+            padding: 30px;
+        }
+        .cover-preview {
+            background: #1a3344;
+            color: white;
+            border-radius: 50px;
+            padding: 40px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-top: 20px;
+            word-break: break-word;
+        }
+        .flex-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .left-column {
+            flex: 2;
+            min-width: 300px;
+        }
+        .right-column {
+            flex: 1;
+            min-width: 250px;
+            background: #fff3e0;
+            border-radius: 50px;
+            padding: 20px;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+<div class="game-container" id="app"></div>
+
+<script>
+(function() {
+    // ========== 多语言资源 (完整) ==========
+    const LANG = {
+        'en': {
+            homeTitle: 'Future Scanning Game',
+            selectLang: 'Select Language',
+            start: 'START',
+            returnLang: '🌐 Language',
+            step1: 'Step 1: Choose Your Profession & Values',
+            step2: 'Step 2: Draw Future Wave Cards',
+            step3: 'Step 3: Explore Synergies',
+            step4: 'Step 4: Future Shock – Adapt & Overcome',
+            step5: 'Step 5: Headline 2036',
+            profession: 'Choose your profession (select or type)',
+            customProf: 'Or enter your own:',
+            values: 'Select 3 most important values (max 3)',
+            next: 'Next',
+            prev: 'Previous',
+            finish: 'Finish & Restart',
+            draw: 'Draw',
+            aiChat: '💬 AI Chat',
+            delete: '✖ Delete',
+            step2Guide: 'Draw one card per domain, two cards for technology domain. Each time you draw a card, study it or ask AI if necessary. Beside each card, write a note brainstorming how this wave may impact on the professional field. If you cannot think of a possible connection, delete and redraw.',
+            shockPrompt: 'Draw more wave cards, keep those you believe that can help you turn the stress (shock) into opportunities.',
+            headlinePrompt: 'Write down your headlines of the breaking news that is probable AND congruent with your values.',
+            generateCover: 'Generate Cover',
+            aiSuggestion: 'AI Suggestion',
+            addSynergy: 'Add Synergy',
+            synergyHint: 'Click two cards above to create synergy',
+            addSynergyPrompt: 'Describe the new opportunity combining these two trends:',
+            synergy: 'Synergy',
+            send: 'Send',
+            chatIntro: 'Ask me anything about this trend...',
+            valuesList: ['Making money', 'Becoming well known', 'Helping others', 'Managing others', 'Job security', 'Working with people rather than objects', 'Inventing things', 'Developing new knowledge or skills', 'Family time', 'Having friendship', 'Making own decision', 'Easy job', 'Exciting job', 'Making use of my talents', 'Job opportunities', 'Have a creative job'],
+            professions: ['Movie Star', 'Teacher', 'Doctor', 'Lawyer', 'Engineer', 'Artist', 'Business Manager', 'Athlete'],
+            domains: ['Economy', 'Technology', 'Socio-cultural', 'Governance', 'Environment', 'Well-being'],
+        },
+        'cn': {
+            homeTitle: '未来扫描游戏',
+            selectLang: '选择语言',
+            start: '开始',
+            returnLang: '🌐 语言',
+            step1: '第一步：选择职业与价值观',
+            step2: '第二步：抽取未来波浪卡',
+            step3: '第三步：探索协同效应',
+            step4: '第四步：未来冲击 – 适应与转机',
+            step5: '第五步：2036头条',
+            profession: '选择你的职业（可点选或输入）',
+            customProf: '或自行输入：',
+            values: '选择三个最重要的价值观（最多3项）',
+            next: '下一步',
+            prev: '上一步',
+            finish: '完成并重新开始',
+            draw: '抽卡',
+            aiChat: '💬 AI对话',
+            delete: '✖ 删除',
+            step2Guide: '每个领域抽一张卡，技术领域抽两张。抽卡后可以研究它或使用AI。在每张卡片下方写下你的想法：这个浪潮会如何影响你的职业。如果想不出关联，可以删除并重抽。',
+            shockPrompt: '抽取更多波浪卡，保留你认为可以帮助你化冲击为机遇的卡片。',
+            headlinePrompt: '写下符合你价值观且可能发生的2036年头条新闻。',
+            generateCover: '生成封面',
+            aiSuggestion: 'AI建议',
+            addSynergy: '添加协同',
+            synergyHint: '点击上方两张卡片建立协同',
+            addSynergyPrompt: '描述这两个趋势结合的新机会：',
+            synergy: '协同',
+            send: '发送',
+            chatIntro: '你可以问我关于这个趋势的任何问题...',
+            valuesList: ['赚钱', '出名', '帮助他人', '管理他人', '工作稳定', '与人而非物打交道', '发明创造', '发展新技能', '家庭时间', '友谊', '自主决策', '轻松工作', '有挑战的工作', '发挥才能', '就业机会', '从事创意工作'],
+            professions: ['电影明星', '教师', '医生', '律师', '工程师', '艺术家', '企业管理者', '运动员'],
+            domains: ['经济', '技术', '社会文化', '治理', '环境', '福祉'],
+        },
+        'tw': {
+            homeTitle: '未來掃描遊戲',
+            selectLang: '選擇語言',
+            start: '開始',
+            returnLang: '🌐 語言',
+            step1: '第一步：選擇職業與價值觀',
+            step2: '第二步：抽取未來波浪卡',
+            step3: '第三步：探索協同效應',
+            step4: '第四步：未來衝擊 – 適應與轉機',
+            step5: '第五步：2036頭條',
+            profession: '選擇你的職業（可點選或輸入）',
+            customProf: '或自行輸入：',
+            values: '選擇三個最重要的價值觀（最多3項）',
+            next: '下一步',
+            prev: '上一步',
+            finish: '完成並重新開始',
+            draw: '抽卡',
+            aiChat: '💬 AI對話',
+            delete: '✖ 刪除',
+            step2Guide: '每個領域抽一張卡，技術領域抽兩張。抽卡後可以研究它或使用AI。在每張卡片下方寫下你的想法：這個浪潮會如何影響你的職業。如果想不出關聯，可以刪除並重抽。',
+            shockPrompt: '抽取更多波浪卡，保留你認為可以幫助你化衝擊為機會的卡片。',
+            headlinePrompt: '寫下符合你價值觀且可能發生的2036年頭條新聞。',
+            generateCover: '生成封面',
+            aiSuggestion: 'AI建議',
+            addSynergy: '添加協同',
+            synergyHint: '點擊上方兩張卡片建立協同',
+            addSynergyPrompt: '描述這兩個趨勢結合的新機會：',
+            synergy: '協同',
+            send: '發送',
+            chatIntro: '你可以問我關於這個趨勢的任何問題...',
+            valuesList: ['賺錢', '出名', '幫助他人', '管理他人', '工作穩定', '與人而非物打交道', '發明創造', '發展新技能', '家庭時間', '友誼', '自主決策', '輕鬆工作', '有挑戰的工作', '發揮才能', '就業機會', '從事創意工作'],
+            professions: ['電影明星', '教師', '醫生', '律師', '工程師', '藝術家', '企業管理者', '運動員'],
+            domains: ['經濟', '技術', '社會文化', '治理', '環境', '福祉'],
+        }
+    };
+
+    // ========== 卡片数据库 (多语言) ==========
+    const CARDS_DB = {
+        'Economy': [
+            { name: { en: 'Future Workplace', cn: '未来工作场所', tw: '未來工作場所' }, desc: { en: 'Remote work, technology integration, new organizational structures.', cn: '远程办公、技术融合、新型组织结构。', tw: '遠端辦公、技術融合、新型組織結構。' }, stage: 'Driving' },
+            { name: { en: 'Space Data Economy', cn: '太空数据经济', tw: '太空數據經濟' }, desc: { en: 'Businesses built on selling satellite imagery and space-derived analytics.', cn: '销售卫星图像、地球观测数据与太空分析。', tw: '銷售衛星圖像、地球觀測數據與太空分析。' }, stage: 'Emerging' },
+            { name: { en: 'He Economy', cn: '男性消费经济', tw: '男性消費經濟' }, desc: { en: 'Rising economic power of male consumers.', cn: '男性消费者经济力量崛起。', tw: '男性消費者經濟力量崛起。' }, stage: 'Driving' },
+            { name: { en: 'Reskilling Imperative', cn: '再培训需求', tw: '再培訓需求' }, desc: { en: 'Significant need for retraining workers for future occupations.', cn: '未来职业需要大规模再培训。', tw: '未來職業需要大規模再培訓。' }, stage: 'Emerging' },
+            { name: { en: 'Social Commerce', cn: '社交电商', tw: '社交電商' }, desc: { en: 'Use of social networks to facilitate e-commerce transactions.', cn: '社交网络促进电子商务交易。', tw: '社交網絡促進電子商務交易。' }, stage: 'Trending' }
+        ],
+        'Technology': [
+            { name: { en: 'Nano 3D printing', cn: '纳米3D打印', tw: '納米3D打印' }, desc: { en: 'Printing customized microscopic components with high accuracy.', cn: '高精度微观部件打印。', tw: '高精度微觀部件打印。' }, stage: 'Brewing' },
+            { name: { en: 'Human-Robot co-working', cn: '人机协作', tw: '人機協作' }, desc: { en: 'Collaboration between humans and robots in the workplace.', cn: '人机协作提升生产效率。', tw: '人機協作提升生產效率。' }, stage: 'Emerging' },
+            { name: { en: 'AI ethics', cn: '人工智能伦理', tw: '人工智慧倫理' }, desc: { en: 'Examining ethical implications of AI to ensure human values.', cn: '确保AI符合人类价值观。', tw: '確保AI符合人類價值觀。' }, stage: 'Emerging' },
+            { name: { en: 'Quantum Computing', cn: '量子计算', tw: '量子計算' }, desc: { en: 'Computation using quantum bits for faster operations.', cn: '利用量子比特超速计算。', tw: '利用量子比特超速計算。' }, stage: 'Emerging' },
+            { name: { en: 'DeepSeek Moment', cn: '深度求索时刻', tw: '深度求索時刻' }, desc: { en: 'Chinese AI models achieving competitive performance at lower cost.', cn: '中国AI低成本高性能突破。', tw: '中國AI低成本高性能突破。' }, stage: 'Signaling' },
+            { name: { en: 'Digital Provenance', cn: '数字溯源', tw: '數字溯源' }, desc: { en: 'Technologies to authenticate origin of digital content.', cn: '数字内容来源验证，打击AI虚假。', tw: '數字內容來源驗證，打擊AI虛假。' }, stage: 'Emerging' },
+            { name: { en: 'Blockchain', cn: '区块链', tw: '區塊鏈' }, desc: { en: 'Decentralized digital ledgers for secure transactions.', cn: '去中心化账本与数字货币。', tw: '去中心化帳本與數字貨幣。' }, stage: 'Driving' }
+        ],
+        'Socio-cultural': [
+            { name: { en: 'Off-World Identity', cn: '地外身份认同', tw: '地外身份認同' }, desc: { en: 'Cultural discussions about identity living away from Earth.', cn: '永久离开地球的人类身份文化讨论。', tw: '永久離開地球的人類身份文化討論。' }, stage: 'Signaling' },
+            { name: { en: 'Intentional Tech Use', cn: '有意识的技术使用', tw: '有意識的技術使用' }, desc: { en: 'Deliberately limiting technology use for mental health.', cn: '为改善心理健康而刻意限制技术使用。', tw: '為改善心理健康而刻意限制技術使用。' }, stage: 'Brewing' },
+            { name: { en: 'Purpose as Driver', cn: '意义驱动', tw: '意義驅動' }, desc: { en: 'Work should give life meaning beyond pay.', cn: '工作不仅为赚钱，更要赋予生命意义。', tw: '工作不僅為賺錢，更要賦予生命意義。' }, stage: 'Emerging' },
+            { name: { en: 'Transhumanists', cn: '超人类主义者', tw: '超人類主義者' }, desc: { en: 'People who believe in using technology to enhance human capabilities.', cn: '相信用技术增强人类能力的人群。', tw: '相信用技術增強人類能力的人群。' }, stage: 'Brewing' },
+            { name: { en: 'Social Prescriptions', cn: '社会处方', tw: '社會處方' }, desc: { en: 'Doctors prescribing social activities against loneliness.', cn: '医生开“社会处方”对抗孤独。', tw: '醫生開「社會處方」對抗孤獨。' }, stage: 'Signaling' }
+        ],
+        'Governance': [
+            { name: { en: 'EU AI Act', cn: '欧盟AI法案', tw: '歐盟AI法案' }, desc: { en: 'First extensive legal framework regulating AI.', cn: '全球首个全面AI法律框架。', tw: '全球首個全面AI法律框架。' }, stage: 'Trending' },
+            { name: { en: 'AI-Facilitated Democracy', cn: 'AI辅助民主', tw: 'AI輔助民主' }, desc: { en: 'Using AI to support citizen consultations and decision-making.', cn: '用AI支持公民咨询、决策。', tw: '用AI支持公民諮詢、決策。' }, stage: 'Brewing' },
+            { name: { en: 'Space Traffic Management', cn: '太空交通管理', tw: '太空交通管理' }, desc: { en: 'Coordinating satellite orbits to prevent collisions.', cn: '协调卫星轨道防碰撞。', tw: '協調衛星軌道防碰撞。' }, stage: 'Emerging' },
+            { name: { en: 'Climate Litigation Growth', cn: '气候诉讼增长', tw: '氣候訴訟增長' }, desc: { en: 'Increasing lawsuits related to climate change.', cn: '涉及代际公平的气候诉讼增加。', tw: '涉及代際公平的氣候訴訟增加。' }, stage: 'Signaling' },
+            { name: { en: 'DAO Governance', cn: 'DAO治理', tw: 'DAO治理' }, desc: { en: 'Decentralized autonomous organizations using blockchain.', cn: '基于区块链的去中心化自治组织。', tw: '基於區塊鏈的去中心化自治組織。' }, stage: 'Trending' }
+        ],
+        'Environment & Sustainability': [
+            { name: { en: 'Direct Air Capture', cn: '直接空气捕获', tw: '直接空氣捕獲' }, desc: { en: 'Capturing CO2 from atmosphere for storage or use.', cn: '从大气捕获二氧化碳，成本200-700美元/吨。', tw: '從大氣捕獲二氧化碳，成本200-700美元/噸。' }, stage: 'Brewing' },
+            { name: { en: 'Green Concrete', cn: '绿色混凝土', tw: '綠色混凝土' }, desc: { en: 'Low-carbon cement alternatives reducing carbon footprint.', cn: '低碳水泥降低碳足迹。', tw: '低碳水泥降低碳足跡。' }, stage: 'Brewing' },
+            { name: { en: 'Decarbonisation', cn: '脱碳', tw: '脫碳' }, desc: { en: 'Reducing greenhouse gas emissions from fossil fuels.', cn: '减少化石燃料温室气体排放。', tw: '減少化石燃料溫室氣體排放。' }, stage: 'Driving' },
+            { name: { en: 'Earth Observation for Climate', cn: '气候地球观测', tw: '氣候地球觀測' }, desc: { en: 'Satellites monitoring climate indicators.', cn: '卫星监测气候指标。', tw: '衛星監測氣候指標。' }, stage: 'Driving' },
+            { name: { en: 'Super-Efficient Solar', cn: '超高效太阳能', tw: '超高效太陽能' }, desc: { en: 'Crystal layers drastically increase solar cell efficiency.', cn: '晶体层大幅提升太阳能效率。', tw: '晶體層大幅提升太陽能效率。' }, stage: 'Emerging' }
+        ],
+        'Well-being': [
+            { name: { en: 'Space Pharmaceuticals', cn: '太空制药', tw: '太空製藥' }, desc: { en: 'Drugs developed in microgravity with improved formulations.', cn: '微重力环境下开发的改良药物。', tw: '微重力環境下開發的改良藥物。' }, stage: 'Signaling' },
+            { name: { en: 'Social Determinants of Health', cn: '健康社会决定因素', tw: '健康社會決定因素' }, desc: { en: 'Conditions in environments that affect health outcomes.', cn: '影响健康的环境社会因素。', tw: '影響健康的環境社會因素。' }, stage: 'Trending' },
+            { name: { en: 'Human Digital Twins', cn: '人类数字孪生', tw: '人類數字孿生' }, desc: { en: 'Virtual physiological models using real-time sensor data.', cn: '实时传感器模拟健康结果。', tw: '實時傳感器模擬健康結果。' }, stage: 'Brewing' },
+            { name: { en: 'Psychedelic-Assisted Therapy', cn: '迷幻剂辅助治疗', tw: '迷幻劑輔助治療' }, desc: { en: 'Using psychedelics with therapy for mental health.', cn: '用迷幻剂辅助治疗PTSD/抑郁。', tw: '用迷幻劑輔助治療PTSD/憂鬱。' }, stage: 'Brewing' },
+            { name: { en: 'Long-Duration Spaceflight Health', cn: '长期太空飞行健康', tw: '長期太空飛行健康' }, desc: { en: 'Solving health challenges of multi-year space missions.', cn: '解决太空辐射、骨流失等健康挑战。', tw: '解決太空輻射、骨流失等健康挑戰。' }, stage: 'Brewing' },
+            { name: { en: 'Microgravity Medicine', cn: '微重力医学', tw: '微重力醫學' }, desc: { en: 'Studying disease and drug development in space.', cn: '空间站研究疾病与药物。', tw: '空間站研究疾病與藥物。' }, stage: 'Emerging' }
+        ]
+    };
+
+    const SHOCKS = {
+        en: [
+            { title: '2028 Global Intelligence Crisis', desc: 'A report causes stock market drop 1.6%, credit card stocks fall 7%. Fears of AI失控蔓延。' },
+            { title: 'Hyperinflation & Supply Chain Disruption', desc: 'Geopolitics drives resource prices soaring, corporate costs skyrocket.' },
+            { title: 'Climate Tipping Point Triggered', desc: 'Permafrost melts releasing methane; global climate emergency declared.' }
+        ],
+        cn: [
+            { title: '2028全球智能危机', desc: '一份报告导致股市下跌1.6%，信贷卡股票暴跌7%。AI失控担忧蔓延。' },
+            { title: '超级通胀与供应链中断', desc: '地缘政治导致关键资源价格飙升，全球企业成本急剧上升。' },
+            { title: '气候临界点触发', desc: '北极永久冻土层大规模融化，释放巨量甲烷，各国进入气候紧急状态。' }
+        ],
+        tw: [
+            { title: '2028全球智能危機', desc: '一份報告導致股市下跌1.6%，信貸卡股票暴跌7%。AI失控擔憂蔓延。' },
+            { title: '超級通膨與供應鏈中斷', desc: '地緣政治導致關鍵資源價格飆升，全球企業成本急劇上升。' },
+            { title: '氣候臨界點觸發', desc: '北極永久凍土層大規模融化，釋放巨量甲烷，各國進入氣候緊急狀態。' }
+        ]
+    };
+
+    // ========== 游戏状态 ==========
+    let currentLang = null;
+    let selectedLangForHome = 'cn';
+    let currentStep = 1;
+    let profession = '电影明星';
+    let customProfInput = '';
+    let selectedValues = ['赚钱', '出名', '从事创意工作'];
+    let drawnCards = {
+        'Economy': [], 'Technology': [], 'Socio-cultural': [], 'Governance': [], 'Environment & Sustainability': [], 'Well-being': []
+    };
+    let connections = [];
+    let currentShock = null;
+    let headline = '';
+    let synergySelectedIds = [];
+
+    // ========== 辅助函数 ==========
+    function t(key) {
+        if (!currentLang) return '';
+        const langObj = LANG[currentLang];
+        if (key === 'valuesList') return langObj.valuesList;
+        if (key === 'professions') return langObj.professions;
+        if (key === 'domains') return langObj.domains;
+        return langObj[key] || key;
+    }
+
+    function genId() {
+        return 'card_' + Date.now() + '_' + Math.random().toString(36).substr(2,8);
+    }
+
+    function getCardName(card) {
+        return card.name[currentLang] || card.name['en'];
+    }
+    function getCardDesc(card) {
+        return card.desc[currentLang] || card.desc['en'];
+    }
+
+    // ========== 真正的 DeepSeek AI 对话函数 ==========
+   async function fetchAIResponse(profession, values, card, question) {
+    const cardName = getCardName(card);
+    const cardDesc = getCardDesc(card);
+    try {
+        const response = await fetch('http://localhost:3000/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ profession, values, cardName, cardDesc, question })
+        });
+        const data = await response.json();
+        return data.reply || 'AI暂时无法回答，请稍后重试。';
+    } catch (error) {
+        console.error(error);
+        return '网络错误或API调用失败。请检查控制台。';
+    }
+}
+
+    function resetGame() {
+        profession = t('professions')[0];
+        selectedValues = t('valuesList').slice(0,3);
+        drawnCards = { 'Economy':[], 'Technology':[], 'Socio-cultural':[], 'Governance':[], 'Environment & Sustainability':[], 'Well-being':[] };
+        connections = [];
+        currentShock = null;
+        synergySelectedIds = [];
+        headline = '';
+        currentStep = 1;
+        render();
+    }
+
+    function goToLangHome() {
+        currentLang = null;
+        render();
+    }
+
+    function canDrawInDomain(domain) {
+        const count = drawnCards[domain].length;
+        if (domain === 'Technology') {
+            return count < 2;
+        } else {
+            return count < 1;
+        }
+    }
+
+    // ========== 渲染 ==========
+    function render() {
+        const app = document.getElementById('app');
+        if (!currentLang) {
+            app.innerHTML = `
+                <div class="lang-home">
+                    <h1>Future Scanning Game<br><span style="font-size:0.6em; color:#ffe68f;">未来扫描游戏</span></h1>
+                    <div class="lang-buttons">
+                        <div class="lang-btn ${selectedLangForHome==='en'?'selected':''}" data-lang="en">English</div>
+                        <div class="lang-btn ${selectedLangForHome==='tw'?'selected':''}" data-lang="tw">繁體中文</div>
+                        <div class="lang-btn ${selectedLangForHome==='cn'?'selected':''}" data-lang="cn">简体中文</div>
+                    </div>
+                    <button class="start-btn" id="startGameBtn">START</button>
+                    <div class="footer-credit">CSTEM Lab, Faculty of Education, The University of Hong Kong</div>
+                </div>
+            `;
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    selectedLangForHome = e.target.dataset.lang;
+                    render();
+                });
+            });
+            document.getElementById('startGameBtn').addEventListener('click', ()=>{
+                currentLang = selectedLangForHome;
+                resetGame();
+            });
+            return;
+        }
+
+        if (currentStep === 4 && !currentShock) {
+            const shocks = SHOCKS[currentLang] || SHOCKS['en'];
+            currentShock = shocks[Math.floor(Math.random() * shocks.length)];
+        }
+
+        let html = `
+            <div class="lang-return">
+                <button class="return-lang-btn" id="returnLangBtn">${t('returnLang')}</button>
+            </div>
+            <div class="step-indicator">
+                ${[1,2,3,4,5].map(s => `<div class="step-circle ${currentStep===s?'active':''}">${s}</div>`).join('')}
+            </div>
+            <div class="step-panel" id="stepPanel">
+                ${renderStep()}
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn" ${currentStep===1?'disabled':''}>${t('prev')}</button>
+                <button class="nav-btn primary" id="nextBtn">${currentStep===5 ? t('finish') : t('next')}</button>
+            </div>
+        `;
+        app.innerHTML = html;
+
+        document.getElementById('returnLangBtn').addEventListener('click', goToLangHome);
+        document.getElementById('prevBtn').addEventListener('click', ()=>{
+            if(currentStep>1) currentStep--;
+            render();
+        });
+        document.getElementById('nextBtn').addEventListener('click', ()=>{
+            if(currentStep===5) {
+                resetGame();
+                return;
+            }
+            if(currentStep===1) {
+                if(selectedValues.length !==3) {
+                    alert(t('values') + ' need 3');
+                    return;
+                }
+            }
+            currentStep++;
+            render();
+        });
+        attachStepEvents();
+    }
+
+    function renderStep() {
+        if(currentStep===1) return renderStep1();
+        if(currentStep===2) return renderStep2();
+        if(currentStep===3) return renderStep3();
+        if(currentStep===4) return renderStep4();
+        if(currentStep===5) return renderStep5();
+    }
+
+    function renderStep1() {
+        let html = `<h2>${t('step1')}</h2>`;
+        html += `<div style="margin-bottom:25px"><strong>${t('profession')}</strong>`;
+        html += `<div class="profession-grid">`;
+        t('professions').forEach(p => {
+            html += `<div class="prof-option ${profession===p?'selected':''}" data-prof="${p}">${p}</div>`;
+        });
+        html += `</div>`;
+        html += `<div class="custom-prof"><span>${t('customProf')}</span> <input type="text" id="customProfInput" placeholder="e.g., Astronaut" value="${customProfInput}"></div>`;
+        html += `</div>`;
+        html += `<div><strong>${t('values')} (${selectedValues.length}/3)</strong>`;
+        html += `<div class="values-container">`;
+        t('valuesList').forEach(v => {
+            html += `<div class="value-chip ${selectedValues.includes(v)?'selected':''}" data-value="${v}">${v}</div>`;
+        });
+        html += `</div></div>`;
+        return html;
+    }
+
+    function renderStep2() {
+        let html = `<h2>${t('step2')}</h2>`;
+        html += `<div class="step-guide">${t('step2Guide')}</div>`;
+        html += `<div class="domain-board">`;
+        const domains = ['Economy','Technology','Socio-cultural','Governance','Environment & Sustainability','Well-being'];
+        domains.forEach(dom => {
+            const canDraw = canDrawInDomain(dom);
+            html += `<div class="domain-col">
+                <div class="domain-title">${t('domains')[domains.indexOf(dom)]} 
+                    <button class="draw-btn ${!canDraw ? 'disabled' : ''}" data-domain="${dom}" ${!canDraw ? 'disabled' : ''}>${t('draw')}</button>
+                </div>`;
+            drawnCards[dom].forEach(card => html += renderCard(card, true));
+            html += `</div>`;
+        });
+        html += `</div>`;
+        return html;
+    }
+
+    function renderStep3() {
+        let html = `<h2>${t('step3')}</h2>`;
+        html += `<div class="connection-zone">`;
+        html += `<p><strong>${t('synergyHint')}</strong></p>`;
+        html += `<div class="selected-cards">`;
+        const allCards = [];
+        for(let d in drawnCards) allCards.push(...drawnCards[d]);
+        allCards.forEach(card => {
+            const cardName = getCardName(card);
+            html += `<div class="card-selector ${synergySelectedIds.includes(card.id)?'selected':''}" data-card-id="${card.id}">${cardName}</div>`;
+        });
+        html += `</div>`;
+        html += `<button class="nav-btn" id="addSynergyBtn">${t('addSynergy')}</button>`;
+        html += `<div class="synergy-list">`;
+        connections.forEach((c,idx) => {
+            html += `<div class="synergy-item">${t('synergy')} ${idx+1}: ${c.description}</div>`;
+        });
+        html += `</div>`;
+        html += `</div>`;
+        return html;
+    }
+
+    function renderStep4() {
+        let html = `<h2>${t('step4')}</h2>`;
+        if(currentShock) {
+            html += `<div class="shock-area">`;
+            html += `<div class="shock-title">⚠️ ${currentShock.title}</div>`;
+            html += `<p style="font-size:1.2rem">${currentShock.desc}</p>`;
+            html += `</div>`;
+        }
+        html += `<div class="flex-row">`;
+        html += `<div class="left-column">`;
+        html += `<p style="font-style:italic; margin-bottom:15px;">${t('shockPrompt')}</p>`;
+        html += `<div class="extra-draw-section">`;
+        const domains = ['Economy','Technology','Socio-cultural','Governance','Environment & Sustainability','Well-being'];
+        domains.forEach(dom => {
+            html += `<div style="margin:15px 0"><strong>${t('domains')[domains.indexOf(dom)]}</strong> <button class="draw-btn" data-domain="${dom}">${t('draw')}</button>`;
+            drawnCards[dom].forEach(card => html += renderCard(card, true));
+            html += `</div>`;
+        });
+        html += `</div>`;
+        html += `</div>`;
+        html += `<div class="right-column">`;
+        html += `<h3 style="margin-bottom:15px;">📋 ${t('synergy')}</h3>`;
+        if(connections.length === 0) {
+            html += `<p>暂无协同</p>`;
+        } else {
+            connections.forEach((c,idx) => {
+                html += `<div class="synergy-item" style="margin-bottom:10px;">${t('synergy')} ${idx+1}: ${c.description}</div>`;
+            });
+        }
+        html += `</div>`;
+        html += `</div>`;
+        return html;
+    }
+
+    function renderStep5() {
+        let html = `<h2>${t('step5')}</h2>`;
+        html += `<div class="headline-area">`;
+        html += `<p>${t('headlinePrompt')}</p>`;
+        html += `<input class="chat-input" id="headlineInput" style="width:100%; margin:20px 0;" placeholder="e.g., Movie Star returns with AI virtual human" value="${headline}">`;
+        html += `<div style="display:flex; gap:15px;">`;
+        html += `<button class="nav-btn" id="aiSuggBtn">${t('aiSuggestion')}</button>`;
+        html += `<button class="nav-btn primary" id="genCoverBtn">${t('generateCover')}</button>`;
+        html += `</div>`;
+        html += `<div class="cover-preview" id="coverPreview">${headline || '2036 HEADLINE'}</div>`;
+        html += `</div>`;
+        return html;
+    }
+
+    function renderCard(card, allowDelete) {
+        let stageColor = '#88c9f2';
+        if(card.stage === 'Brewing') stageColor = '#b39fe0';
+        else if(card.stage === 'Signaling') stageColor = '#f4b860';
+        else if(card.stage === 'Trending') stageColor = '#6cc4a1';
+        else if(card.stage === 'Driving') stageColor = '#e68c7c';
+        else if(card.stage === 'Emerging') stageColor = '#f2b88c';
+        const cardName = getCardName(card);
+        const cardDesc = getCardDesc(card);
+        return `
+            <div class="card-item" data-card-id="${card.id}" style="border-left-color: ${stageColor};">
+                <div class="card-header">
+                    <span class="card-name">${cardName}</span>
+                    <span class="card-stage">${card.stage}</span>
+                </div>
+                <div class="card-desc">${cardDesc}</div>
+                <div class="card-actions">
+                    <button class="ai-chat-btn" data-card-id="${card.id}">${t('aiChat')}</button>
+                    ${allowDelete ? `<button class="delete-card-btn" data-card-id="${card.id}">${t('delete')}</button>` : ''}
+                </div>
+                <textarea class="thought-textarea" placeholder="写下你的想法..." data-card-id="${card.id}">${card.thought || ''}</textarea>
+                <div class="chat-modal" id="chat-${card.id}">
+                    <div class="chat-messages" id="msg-${card.id}">${t('chatIntro')}</div>
+                    <div class="chat-input-area">
+                        <input class="chat-input" id="inp-${card.id}" placeholder="Ask...">
+                        <button class="send-chat" data-card-id="${card.id}">${t('send')}</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function attachStepEvents() {
+        if(currentStep===1) {
+            document.querySelectorAll('.prof-option').forEach(el => {
+                el.addEventListener('click', e => {
+                    profession = e.target.dataset.prof;
+                    customProfInput = '';
+                    document.getElementById('customProfInput').value = '';
+                    render();
+                });
+            });
+            document.getElementById('customProfInput')?.addEventListener('input', e => {
+                customProfInput = e.target.value;
+                if(customProfInput.trim()) profession = customProfInput.trim();
+                document.querySelectorAll('.prof-option').forEach(p => p.classList.remove('selected'));
+            });
+            document.querySelectorAll('.value-chip').forEach(el => {
+                el.addEventListener('click', e => {
+                    const val = e.target.dataset.value;
+                    if(selectedValues.includes(val)) {
+                        selectedValues = selectedValues.filter(v => v!==val);
+                    } else if(selectedValues.length < 3) {
+                        selectedValues.push(val);
+                    } else {
+                        alert(t('values') + '最多选择3个');
+                    }
+                    render();
+                });
+            });
+        }
+
+        if(currentStep===2) {
+            document.querySelectorAll('.draw-btn:not(.disabled)').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    const domain = e.target.dataset.domain;
+                    if (!canDrawInDomain(domain)) {
+                        alert(`已达上限，请先删除一张${domain==='Technology'?'技术领域最多2张':'该领域最多1张'}`);
+                        return;
+                    }
+                    const domainCards = CARDS_DB[domain] || [];
+                    if(domainCards.length===0) return;
+                    const rand = domainCards[Math.floor(Math.random()*domainCards.length)];
+                    const newCard = {
+                        name: { ...rand.name },
+                        desc: { ...rand.desc },
+                        stage: rand.stage,
+                        id: genId(),
+                        thought: ''
+                    };
+                    drawnCards[domain].push(newCard);
+                    render();
+                });
+            });
+            attachCardEvents(true);
+        }
+
+        if(currentStep===3) {
+            document.querySelectorAll('.card-selector').forEach(el => {
+                el.addEventListener('click', e => {
+                    const id = e.target.dataset.cardId;
+                    if(synergySelectedIds.includes(id)) {
+                        synergySelectedIds = synergySelectedIds.filter(i => i!==id);
+                    } else {
+                        if(synergySelectedIds.length < 2) synergySelectedIds.push(id);
+                        else alert('最多选择两张卡片');
+                    }
+                    render();
+                });
+            });
+            document.getElementById('addSynergyBtn')?.addEventListener('click', ()=>{
+                if(synergySelectedIds.length !==2) { alert('请选择两张卡片'); return; }
+                const promptMsg = t('addSynergyPrompt');
+                const desc = prompt(promptMsg);
+                if(desc && desc.trim()) {
+                    connections.push({ cardId1: synergySelectedIds[0], cardId2: synergySelectedIds[1], description: desc.trim() });
+                    synergySelectedIds = [];
+                    render();
+                }
+            });
+        }
+
+        if(currentStep===4) {
+            document.querySelectorAll('.draw-btn').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    const domain = e.target.dataset.domain;
+                    const domainCards = CARDS_DB[domain] || [];
+                    if(domainCards.length===0) return;
+                    const rand = domainCards[Math.floor(Math.random()*domainCards.length)];
+                    const newCard = {
+                        name: { ...rand.name },
+                        desc: { ...rand.desc },
+                        stage: rand.stage,
+                        id: genId(),
+                        thought: ''
+                    };
+                    drawnCards[domain].push(newCard);
+                    render();
+                });
+            });
+            attachCardEvents(true);
+        }
+
+        if(currentStep===5) {
+            document.getElementById('aiSuggBtn')?.addEventListener('click', ()=>{
+                const vals = selectedValues.join('、');
+                const sugg = `基于你的职业「${profession}」和价值观「${vals}」，2036年头条可能是：${profession}利用AI与跨领域合作，成为全球文化新象征。`;
+                alert(sugg);
+            });
+            document.getElementById('genCoverBtn')?.addEventListener('click', ()=>{
+                headline = document.getElementById('headlineInput')?.value || '2036 Future';
+                document.getElementById('coverPreview').innerText = headline;
+            });
+        }
+    }
+
+    function attachCardEvents(allowDelete) {
+        document.querySelectorAll('.ai-chat-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const cardId = e.target.dataset.cardId;
+                const chatDiv = document.getElementById('chat-'+cardId);
+                if(chatDiv) chatDiv.classList.toggle('show');
+            });
+        });
+
+        document.querySelectorAll('.send-chat').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const cardId = e.target.dataset.cardId;
+                const inp = document.getElementById('inp-'+cardId);
+                const question = inp.value.trim();
+                if(!question) return;
+
+                let card = null;
+                for(let d in drawnCards) {
+                    const found = drawnCards[d].find(c => c.id === cardId);
+                    if(found) { card = found; break; }
+                }
+                if(!card) return;
+
+                const msgDiv = document.getElementById('msg-'+cardId);
+                msgDiv.innerHTML += `<div><b>你:</b> ${question}</div><div><i>AI思考中...</i></div>`;
+                inp.value = '';
+
+                const answer = await fetchAIResponse(profession, selectedValues, card, question);
+                // 移除最后一个“思考中”
+                const children = msgDiv.children;
+                if(children.length > 0) {
+                    msgDiv.removeChild(children[children.length-1]);
+                }
+                msgDiv.innerHTML += `<div><b>AI:</b> ${answer}</div><hr>`;
+            });
+        });
+
+        document.querySelectorAll('.thought-textarea').forEach(ta => {
+            ta.removeEventListener('blur', saveThought);
+            ta.addEventListener('blur', saveThought);
+        });
+
+        if(allowDelete) {
+            document.querySelectorAll('.delete-card-btn').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    const cardId = e.target.dataset.cardId;
+                    for(let d in drawnCards) {
+                        drawnCards[d] = drawnCards[d].filter(c => c.id !== cardId);
+                    }
+                    render();
+                });
+            });
+        }
+    }
+
+    function saveThought(e) {
+        const ta = e.target;
+        const cardId = ta.dataset.cardId;
+        const thought = ta.value;
+        for(let d in drawnCards) {
+            const card = drawnCards[d].find(c => c.id === cardId);
+            if(card) {
+                card.thought = thought;
+                break;
+            }
+        }
+    }
+
+    render();
+})();
+</script>
+</body>
+</html>
